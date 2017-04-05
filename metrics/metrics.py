@@ -13,6 +13,7 @@ metadata = MetaData()
 trackpoints = Table('track_codes', metadata,
                     Column('code', String, primary_key=True),
                     Column('content', String),
+                    Column('redirect', String)
                     )
 
 visits = Table('visits', metadata,
@@ -53,8 +54,11 @@ class MetricsApp():
                                                 user_agent=UA,
                                                 IP=IP,
                                                 metadata=trackpoint.content))
-
-            return aiohttp.web.Response(text='nada')
+            if trackpoint.redirect is None:
+                return aiohttp.web.Response(text='nada')
+            else:
+                print(f'redirecting the user to {trackpoint.redirect}')
+                return aiohttp.web.HTTPFound(trackpoint.redirect)
 
         metrics.router.add_get('/{tracker}', get_tracker)
         return metrics
