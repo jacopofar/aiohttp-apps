@@ -2,6 +2,7 @@ from aiohttp import web
 import aiohttp
 import hashlib
 import os.path as path
+from string import hexdigits
 class PastabinApp():
     def get_app(self):
         pastabin = web.Application()
@@ -9,11 +10,12 @@ class PastabinApp():
 
         async def see_paste(request):
             id = request.match_info['file_identifier']
-
+            if not all(c in hexdigits for c in id):
+                return aiohttp.web.Response(text=f'Error, paste {id} is unknown', status=404)
             data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
             file_path = path.join(data_dir, id)
             if not path.isfile(file_path):
-                return aiohttp.web.Response(text=f'Error, paste {id} is unknown')
+                return aiohttp.web.Response(text=f'Error, paste {id} is unknown', status=404)
 
             with open(file_path, 'r') as fp:
                 return aiohttp.web.Response(text=fp.read())
