@@ -1,0 +1,2 @@
+# do not export the database
+metrics.db
