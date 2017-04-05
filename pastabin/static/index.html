@@ -23,10 +23,10 @@
     <p class="lead">Paste and share your snippet</p>
 
     <p>Layout and CSS from Bootstrap</p>
-    <form>
+    <form method="POST" action="send_paste">
         <div class="form-group">
             <label for="paste_textarea">Paste here</label>
-            <textarea class="form-control" id="paste_textarea" rows="30"></textarea>
+            <textarea class="form-control" name="pasted_text" id="pasted_text" rows="30"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
