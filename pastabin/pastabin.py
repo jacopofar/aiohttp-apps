@@ -4,7 +4,7 @@ import hashlib
 import os.path as path
 from string import hexdigits
 class PastabinApp():
-    def get_app(self):
+    def get_app(self, parent_app):
         pastabin = web.Application()
         pastabin.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'))
 
