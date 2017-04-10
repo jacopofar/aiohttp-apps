@@ -28,21 +28,25 @@ metadata.create_all(engine)
 
 class MetricsApp():
     def get_app(self, parent_app):
+
+        def after_authentication(auth_params=None):
+            def decorator(original_handler):
+                async def new_fun(request):
+                    candidate_token = request.headers.get('X-TOKEN', request.query.get('token', None))
+                    print(f'candidate token for {request.rel_url} is {candidate_token}')
+                    parent_app['config'].secret_token
+                    if candidate_token != parent_app['config'].secret_token:
+                        return aiohttp.web.Response(status=404,
+                                                    text='Hello, this is a decorator and I refused the unauthenticated request ')
+                    return await original_handler(request)
+
+                return new_fun
+
+            return decorator
+
         metrics = web.Application()
-# TODO this middleware is not endpoint-specific, replace this with a decorator
-        async def auth_middleware(app, handler):
-            async def middleware(request):
-                candidate_token = request.headers.get('X-TOKEN', request.query.get('token', None))
-                print(f'candidate token for {request.rel_url} is {candidate_token}')
-                parent_app['config'].secret_token
-                if candidate_token != parent_app['config'].secret_token:
-                    return aiohttp.web.Response(status=404, text='Hello, this is a middleware and I refused the unauthenticated request ')
-                return await handler(request)
 
-            return middleware
-
-        metrics.middlewares.append(auth_middleware)
-
+        @after_authentication()
         async def get_tracker(request):
             track_id = request.match_info['tracker']
             trackpoint = conn.execute(select([trackpoints]).where(trackpoints.c.code == track_id)).fetchone()
