@@ -1,0 +1,3 @@
+[JWT]
+jwt_secret = secret token to be changed
+jwt_algorithms = HS256

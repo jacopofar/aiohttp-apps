@@ -4,7 +4,7 @@ from os import path
 from sqlalchemy import create_engine, select
 from sqlalchemy import Table, Column, String, MetaData, ForeignKey
 import datetime
-
+from json import decoder
 engine = create_engine('sqlite:///' + path.join(path.dirname(path.realpath(__file__)), 'metrics.db'), echo=True)
 conn = engine.connect()
 
@@ -26,23 +26,28 @@ visits = Table('visits', metadata,
 metadata.create_all(engine)
 
 
+def after_authentication(mode='JUST_USERNAME'):
+    def decorator(original_handler):
+        async def new_fun(request):
+            payload = request.get('signed_payload')
+            if payload is None:
+                return aiohttp.web.Response(status=403,
+                                            text='Sorry, you are not authenticated')
+            if mode == 'JUST_USERNAME':
+                if 'u' not in payload:
+                    return aiohttp.web.Response(status=403,
+                                                text='Sorry, invalid authentication, no username')
+                return await original_handler(request)
+            print(f'UNKNOWN AUTHENTICATION MODE {mode}')
+            return aiohttp.web.Response(status=500,
+                                        text=f'Sorry, authentication mode {mode} in unknown')
+
+        return new_fun
+
+    return decorator
+
 class MetricsApp():
     def get_app(self, parent_app):
-
-        def after_authentication(auth_params=None):
-            def decorator(original_handler):
-                async def new_fun(request):
-                    # TODO manage JSON POSTs
-                    candidate_token = request.headers.get('X-TOKEN', request.query.get('token', None))
-                    print(f'candidate token for {request.rel_url} is {candidate_token}')
-                    if candidate_token != parent_app['config'].secret_token:
-                        return aiohttp.web.Response(status=404,
-                                                    text='Hello, this is a decorator and I refused the unauthenticated request ')
-                    return await original_handler(request)
-
-                return new_fun
-
-            return decorator
 
         metrics = web.Application()
 
@@ -81,35 +86,14 @@ class MetricsApp():
 
         @after_authentication()
         async def add_tracker(request):
-            # TODO rewrite this to add, not use, a tracker
-            track_id = request.match_info['tracker']
-            trackpoint = conn.execute(select([trackpoints]).where(trackpoints.c.code == track_id)).fetchone()
-            if trackpoint is None:
-                print(f'no trackpoint found for {track_id}')
-                return aiohttp.web.Response(status=404, text="unknown URL")
-            # try to get the IP directly
-            IP = None
-            peername = request.transport.get_extra_info('peername')
-            if peername is not None:
-                IP, _ = peername
-            if 'X-Forwarded-For' in request.headers:
-                IP = request.headers['X-Forwarded-For']
-            if 'Forwarded' in request.headers:
-                IP = request.headers['Forwarded']
-            UA = request.headers.get('User-Agent', None)
-
-            print(f'GET for trackpoint {track_id} from {IP} and user agent {UA}')
-
-            conn.execute(visits.insert().values(track_id=track_id,
-                                                timestamp=datetime.datetime.now().isoformat(),
-                                                user_agent=UA,
-                                                IP=IP,
-                                                metadata=trackpoint.content))
-            if trackpoint.redirect is None:
-                return aiohttp.web.Response(text='Is anyone there?')
-            else:
-                print(f'redirecting the user to {trackpoint.redirect}')
-                return aiohttp.web.HTTPFound(trackpoint.redirect)
+            result = None
+            try:
+                result = await request.json()
+            except decoder.JSONDecodeError as je:
+                return aiohttp.web.Response(text=f'error decoding JSON: {je}', status=400)
+            # TODO insert the tracker inside the DB
+            print(result)
+            return aiohttp.web.HTTPFound("https://example.com")
 
         metrics.router.add_post('/{tracker}', add_tracker)
 
