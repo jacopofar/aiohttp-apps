@@ -2,9 +2,10 @@ from aiohttp import web
 import aiohttp
 from os import path
 from sqlalchemy import create_engine, select
-from sqlalchemy import Table, Column, String, MetaData, ForeignKey, func
+from sqlalchemy import Table, Column, String, MetaData, ForeignKey, Boolean
 import datetime
 from json import decoder
+from base64 import b64decode
 engine = create_engine('sqlite:///' + path.join(path.dirname(path.realpath(__file__)), 'metrics.db'), echo=True)
 conn = engine.connect()
 
@@ -13,7 +14,8 @@ metadata = MetaData()
 trackpoints = Table('track_codes', metadata,
                     Column('code', String, primary_key=True),
                     Column('content', String),
-                    Column('redirect', String)
+                    Column('redirect', String),
+                    Column('is_image', Boolean)
                     )
 
 visits = Table('visits', metadata,
@@ -76,6 +78,12 @@ class MetricsApp():
                                                 IP=IP,
                                                 metadata=trackpoint.content))
             if trackpoint.redirect is None:
+                if trackpoint.is_image:
+                    # 1x1 red GIF
+                    return aiohttp.web.Response(
+                        headers={'Content-Type': 'image/gif'},
+                        body=b64decode('R0lGODlhAQABAIABAP8AAP///yH5BAEAAAEALAAAAAABAAEAAAICRAEAOw=='),
+                    )
                 return aiohttp.web.Response(text='Is anyone there?')
             else:
                 print(f'redirecting the user to {trackpoint.redirect}')
@@ -94,18 +102,21 @@ class MetricsApp():
             if 'code' not in result:
                 return aiohttp.web.Response(text=f'no "code" field in JSON request!', status=400)
             if conn.execute(select([trackpoints]).where(trackpoints.c.code == result['code'])).fetchone() is None:
-                            conn.execute(trackpoints.insert().values(code=result['code'],
-                                                redirect=result.get('redirect', None),
-                                                content=result.get('content', None),
-                                                ))
+                            conn.execute(trackpoints.insert().values(
+                                code=result['code'],
+                                redirect=result.get('redirect', None),
+                                content=result.get('content', None),
+                                is_image=result.get('is_image', None),
+                                ))
                             return aiohttp.web.Response(text='Endpoint added: ' + str(
                                 metrics.router['get_tracker'].url_for(tracker=result['code'])))
 
             else:
                 conn.execute(trackpoints.update().where(trackpoints.c.code == result['code'])
                              .values(redirect=result.get('redirect', None),
-                                                         content=result.get('content', None),
-                                                         ))
+                                     content=result.get('content', None),
+                                     is_image=result.get('is_image', None),
+                                    ))
                 return aiohttp.web.Response(
                     text='Endpoint updated: ' + str(metrics.router['get_tracker'].url_for(tracker=result['code'])))
 

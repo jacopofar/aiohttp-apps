@@ -6,9 +6,9 @@ Those are:
 
 * pastabin, a paste service (✔✔✔︎ done)
 * a chat system with websockets
-* micro publish system (like txti)
+* micro publish system (✔ in progress)
 * micro twitter 
-* metric collector (to collect metrics about page visits or QR codes usage) (✔✔ in progress)
+* metric collector (to collect metrics about page visits or QR codes usage) (✔✔✔ done)
 * a tool to track the content at a given URL at the current time (screenshot or page HTML)
 * generate pages based on the [NLTK-grammar sampler](https://github.com/jacopofar/django-nltk-generator)
 * an application to build an image ranking by extracting random pairs and letting users vote between them
