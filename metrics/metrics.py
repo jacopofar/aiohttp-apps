@@ -2,7 +2,7 @@ from aiohttp import web
 import aiohttp
 from os import path
 from sqlalchemy import create_engine, select
-from sqlalchemy import Table, Column, String, MetaData, ForeignKey
+from sqlalchemy import Table, Column, String, MetaData, ForeignKey, func
 import datetime
 from json import decoder
 engine = create_engine('sqlite:///' + path.join(path.dirname(path.realpath(__file__)), 'metrics.db'), echo=True)
@@ -81,7 +81,7 @@ class MetricsApp():
                 print(f'redirecting the user to {trackpoint.redirect}')
                 return aiohttp.web.HTTPFound(trackpoint.redirect)
 
-        metrics.router.add_get('/{tracker}', get_tracker)
+        metrics.router.add_get('/{tracker}', get_tracker, name='get_tracker')
 
 
         @after_authentication()
@@ -91,10 +91,24 @@ class MetricsApp():
                 result = await request.json()
             except decoder.JSONDecodeError as je:
                 return aiohttp.web.Response(text=f'error decoding JSON: {je}', status=400)
-            # TODO insert the tracker inside the DB
-            print(result)
-            return aiohttp.web.HTTPFound("https://example.com")
+            if 'code' not in result:
+                return aiohttp.web.Response(text=f'no "code" field in JSON request!', status=400)
+            if conn.execute(select([trackpoints]).where(trackpoints.c.code == result['code'])).fetchone() is None:
+                            conn.execute(trackpoints.insert().values(code=result['code'],
+                                                redirect=result.get('redirect', None),
+                                                content=result.get('content', None),
+                                                ))
+                            return aiohttp.web.Response(text='Endpoint added: ' + str(
+                                metrics.router['get_tracker'].url_for(tracker=result['code'])))
 
-        metrics.router.add_post('/{tracker}', add_tracker)
+            else:
+                conn.execute(trackpoints.update().where(trackpoints.c.code == result['code'])
+                             .values(redirect=result.get('redirect', None),
+                                                         content=result.get('content', None),
+                                                         ))
+                return aiohttp.web.Response(
+                    text='Endpoint updated: ' + str(metrics.router['get_tracker'].url_for(tracker=result['code'])))
+
+        metrics.router.add_post('/', add_tracker)
 
         return metrics
