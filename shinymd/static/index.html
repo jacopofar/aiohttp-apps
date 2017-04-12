@@ -25,7 +25,7 @@
     <h1>Shinymd</h1>
     <p class="lead">Publish a page. That's it.</p>
 
-    <p>Layout and CSS from Bootstrap</p>
+    <p>Layout and CSS from Bootstrap, editor from <a href="https://simplemde.com/">SimpleMDE</a></p>
     <form method="POST" action="publish_page">
         <div class="form-group">
             <label for="page_md">Write the Markdown here:</label><br/>
@@ -39,7 +39,6 @@ This will be published as a plain UTF-8 encoded HTML page, so emojis are support
         </div>
         <button type="submit" class="btn btn-primary">Publish</button>
     </form>
-
 </div>
 <script>
 var simplemde = new SimpleMDE({ element: document.getElementById("page_md") });
