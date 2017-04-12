@@ -1,6 +1,8 @@
 from aiohttp import web
 from pastabin import pastabin
 from metrics import metrics
+from shinymd import shinymd
+
 import aiohttp
 import jwt
 import jinja2
@@ -20,6 +22,8 @@ aiohttp_jinja2.setup(app,
 # nested applications are in their respective folder, to make easier to split them
 app.add_subapp('/pastabin/', pastabin.PastabinApp().get_app(app))
 app.add_subapp('/metrics/', metrics.MetricsApp().get_app(app))
+app.add_subapp('/shinymd/', shinymd.ShinymdApp().get_app(app))
+
 
 
 async def error_middleware(app, handler):
