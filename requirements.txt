@@ -1,6 +1,9 @@
 aiohttp==2.0.5
+aiohttp-jinja2==0.13.0
 async-timeout==1.2.0
 chardet==2.3.0
+Jinja2==2.9.6
+MarkupSafe==1.0
 multidict==2.1.4
 py==1.4.33
 PyJWT==1.4.2
