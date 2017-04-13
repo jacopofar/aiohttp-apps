@@ -14,12 +14,11 @@ import config
 app = web.Application()
 app['config'] = config
 
-aiohttp_jinja2.setup(app,
-                     loader=jinja2.FileSystemLoader(
-                         path.join(path.dirname(path.dirname(__file__)), 'assets/jinja_templates')))
+template_folder = path.join(path.abspath(path.dirname(__file__)), 'assets/jinja_templates')
+aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(template_folder))
 
 # load global configuration
-# nested applications are in their respective folder, to make easier to split them
+# nested applications are in their respective folders, to make easier to split them
 app.add_subapp('/pastabin', pastabin.PastabinApp().get_app(app))
 app.add_subapp('/metrics', metrics.MetricsApp().get_app(app))
 app.add_subapp('/shinymd', shinymd.ShinymdApp().get_app(app))
@@ -41,7 +40,7 @@ async def error_middleware(this_app, handler):
             print(type(ex))
             response = aiohttp_jinja2.render_template('500.jinja2',
                                                       request,
-                                                      {'a': 'b'})
+                                                      {'a': 'b'},)
             response.set_status(500)
 
     return middleware_handler

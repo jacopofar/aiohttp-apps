@@ -6,11 +6,11 @@ from markdown2 import Markdown
 
 
 class ShinymdApp():
-    @staticmethod
-    def get_app(parent_app):
+    def get_app(self, parent_app):
         shinymd = web.Application()
         shinymd.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'))
-
+        # trick to reuse the jinjia2 environment
+        shinymd['aiohttp_jinja2_environment'] = parent_app['aiohttp_jinja2_environment']
         async def see_article(request):
             page_id = request.match_info['file_identifier']
             data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
