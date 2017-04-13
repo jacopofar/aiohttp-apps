@@ -34,7 +34,17 @@ async def error_middleware(this_app, handler):
                                                       {'a': 'b'})
             response.set_status(404)
             return response
-        except web.HTTPException as ex:
+        except aiohttp.web_exceptions.HTTPForbidden as ex:
+            print(f'there was an HTTP exception processing {request.rel_url}!')
+            print(ex)
+            print(type(ex))
+            response = aiohttp_jinja2.render_template('403.jinja2',
+                                                      request,
+                                                      {'a': 'b'},)
+            response.set_status(403)
+            return response
+
+        except aiohttp.web_exceptions.HTTPForbidden as ex:
             print(f'there was an HTTP exception processing {request.rel_url}!')
             print(ex)
             print(type(ex))
@@ -42,6 +52,7 @@ async def error_middleware(this_app, handler):
                                                       request,
                                                       {'a': 'b'},)
             response.set_status(500)
+            return response
 
     return middleware_handler
 
