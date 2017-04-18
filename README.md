@@ -5,7 +5,7 @@ This repository shows a few example applications implemented (or to be implement
 Those are:
 
 * pastabin, a paste service (✔✔✔︎ done)
-* a chat system with websockets
+* a chat system with websockets (✔ in progress)
 * micro publish system (✔✔✔︎ done)
 * micro twitter 
 * metric collector (to collect metrics about page visits or QR codes usage) (✔✔✔ done)

@@ -47,7 +47,7 @@ class ShinymdApp():
                     markdowner = Markdown()
                     obj['html_content'] = markdowner.convert(text)
                     fp.write(json.dumps(obj))
-            return aiohttp.web.HTTPFound(shinymd.router['see_page'].url_for(file_identifier=id))
+            return aiohttp.web.HTTPFound(shinymd.router['see_page'].url_for(file_identifier=page_id))
 
         shinymd.router.add_post('/publish_page', publish_page)
 
