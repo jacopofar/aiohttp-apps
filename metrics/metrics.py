@@ -52,8 +52,7 @@ class MetricsApp():
     def get_app(self, parent_app):
 
         metrics = web.Application()
-        metrics['aiohttp_jinja2_environment'] = parent_app['aiohttp_jinja2_environment']
-
+        metrics['use_main_app_error_pages'] = True
         async def get_tracker(request):
             track_id = request.match_info['tracker']
             trackpoint = conn.execute(select([trackpoints]).where(trackpoints.c.code == track_id)).fetchone()

@@ -3,11 +3,15 @@ import aiohttp
 import hashlib
 import os.path as path
 from string import hexdigits
+
+
 class PastabinApp():
     def get_app(self, parent_app):
         pastabin = web.Application()
-        pastabin.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'))
-
+        pastabin.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
+        # this is to manage an URL without the trailing /
+        pastabin.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(pastabin.router['index'].url_for()) + 'index.html'))
+        setattr(pastabin, 'use_main_app_error_pages', True)
         async def see_paste(request):
             id = request.match_info['file_identifier']
             if not all(c in hexdigits for c in id):
@@ -39,8 +43,6 @@ class PastabinApp():
             return aiohttp.web.HTTPFound(pastabin.router['see_paste'].url_for(file_identifier=file_name))
 
         pastabin.router.add_post('/send_paste', send_paste)
-
-
 
 
         pastabin.router.add_static('/', 'pastabin/static')
