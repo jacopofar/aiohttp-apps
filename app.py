@@ -10,9 +10,13 @@ import aiohttp_jinja2
 import os.path as path
 
 import config
+import logging
+
+
 
 app = web.Application()
 app['config'] = config
+
 
 template_folder = path.join(path.abspath(path.dirname(__file__)), 'assets/jinja_templates')
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(template_folder), app_key='root_app_jinja2_environment')
@@ -28,7 +32,7 @@ async def error_middleware(this_app, handler):
     async def middleware_handler(request):
         # the error pages are used only when the nested app explicitly delegates to use them
         # or there's just no nested app to call (unknown URL)
-        if request.app is app or getattr(request.app, 'use_main_app_error_pages', False):
+        if request.app is app or request.app['use_main_app_error_pages']:
             try:
                     return await handler(request)
 
@@ -42,10 +46,8 @@ async def error_middleware(this_app, handler):
                 return response
             except aiohttp.web_exceptions.HTTPForbidden as ex:
                 request.app['root_app_jinja2_environment'] = app['root_app_jinja2_environment']
-
-                print(f'there was an HTTP exception processing {request.rel_url}!')
-                print(ex)
-                print(type(ex))
+                logging.warning(f'there was an HTTP exception processing {request.rel_url}!')
+                logging.warning(ex)
                 response = aiohttp_jinja2.render_template('403.jinja2',
                                                           request,
                                                           {'a': 'b'},
@@ -94,5 +96,18 @@ async def jwt_middleware(this_app, handler):
 app.middlewares.append(jwt_middleware)
 
 app.router.add_static('/static', 'assets/static')
+
+# set logging time to UTC
+from time import gmtime
+logging.Formatter.converter = gmtime
+ch = logging.StreamHandler()
+# TODO message is a raw aiohttp log message, redundant, how to change it? Docs are not very clear :(
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s', '%Y-%m-%dT%H:%M:%S')
+ch.setFormatter(formatter)
+mp = logging.getLogger('aiohttp.access')
+
+logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
+logging.getLogger('aiohttp.access').addHandler(ch)
+
 
 web.run_app(app, port=config.web_port)

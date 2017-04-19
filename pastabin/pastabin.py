@@ -8,10 +8,10 @@ from string import hexdigits
 class PastabinApp():
     def get_app(self, parent_app):
         pastabin = web.Application()
+        pastabin['use_main_app_error_pages'] = True
         pastabin.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
         # this is to manage an URL without the trailing /
         pastabin.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(pastabin.router['index'].url_for()) + 'index.html'))
-        setattr(pastabin, 'use_main_app_error_pages', True)
         async def see_paste(request):
             id = request.match_info['file_identifier']
             if not all(c in hexdigits for c in id):

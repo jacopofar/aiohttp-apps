@@ -8,7 +8,7 @@ from markdown2 import Markdown
 class ShinymdApp():
     def get_app(self, parent_app):
         shinymd = web.Application()
-
+        shinymd['use_main_app_error_pages'] = False
         shinymd.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
         # this is to manage an URL without the trailing /
         shinymd.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(shinymd.router['index'].url_for()) + 'index.html'))
