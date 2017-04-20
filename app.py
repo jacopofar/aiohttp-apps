@@ -2,6 +2,7 @@ from aiohttp import web
 from pastabin import pastabin
 from metrics import metrics
 from shinymd import shinymd
+from time import gmtime
 
 import aiohttp
 import jwt
@@ -11,7 +12,6 @@ import os.path as path
 
 import config
 import logging
-
 
 
 app = web.Application()
@@ -98,7 +98,6 @@ app.middlewares.append(jwt_middleware)
 app.router.add_static('/static', 'assets/static')
 
 # set logging time to UTC
-from time import gmtime
 logging.Formatter.converter = gmtime
 ch = logging.StreamHandler()
 # TODO message is a raw aiohttp log message, redundant, how to change it? Docs are not very clear :(
@@ -108,6 +107,5 @@ mp = logging.getLogger('aiohttp.access')
 
 logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
 logging.getLogger('aiohttp.access').addHandler(ch)
-
 
 web.run_app(app, port=config.web_port)

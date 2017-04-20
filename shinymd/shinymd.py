@@ -1,13 +1,15 @@
 from aiohttp import web
 import aiohttp
 import json
-import os.path as path
+from os import path, makedirs
 from markdown2 import Markdown
 
 
 class ShinymdApp():
     def get_app(self, parent_app):
         shinymd = web.Application()
+        data_dir = path.join(parent_app['config'].data_folder, 'shinymd_data')
+        makedirs(data_dir, exist_ok=True)
         shinymd['use_main_app_error_pages'] = False
         shinymd.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
         # this is to manage an URL without the trailing /
@@ -16,7 +18,6 @@ class ShinymdApp():
 
         async def see_article(request):
             page_id = request.match_info['file_identifier']
-            data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
             file_path = path.realpath(path.join(data_dir, page_id))
             if path.commonpath([data_dir, file_path]) != data_dir:
                 print(f'unacceptable path: {page_id}')
@@ -38,7 +39,6 @@ class ShinymdApp():
             text = form_data['page_md']
             page_id = form_data['page_id']
 
-            data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
             file_path = path.realpath(path.join(data_dir, page_id))
             if path.commonpath([data_dir, file_path]) != data_dir:
                 print(f'proposed an unacceptable path: {page_id}')

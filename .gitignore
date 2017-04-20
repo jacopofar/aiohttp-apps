@@ -98,5 +98,7 @@ ENV/
 #Pycharm
 .idea
 
-#secret config files
+# secret config files
 config.ini
+# persistent app data
+persistent_data

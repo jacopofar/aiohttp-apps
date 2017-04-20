@@ -6,26 +6,6 @@ from sqlalchemy import Table, Column, String, MetaData, ForeignKey, Boolean
 import datetime
 from json import decoder
 from base64 import b64decode
-engine = create_engine('sqlite:///' + path.join(path.dirname(path.realpath(__file__)), 'metrics.db'), echo=True)
-conn = engine.connect()
-
-metadata = MetaData()
-
-trackpoints = Table('track_codes', metadata,
-                    Column('code', String, primary_key=True),
-                    Column('content', String),
-                    Column('redirect', String),
-                    Column('is_image', Boolean)
-                    )
-
-visits = Table('visits', metadata,
-               Column('track_id', None, ForeignKey('track_codes.code')),
-               Column('timestamp', String),
-               Column('user_agent', String),
-               Column('IP', String),
-               Column('metadata', String),
-               )
-metadata.create_all(engine)
 
 
 def after_authentication(mode='JUST_USERNAME'):
@@ -50,6 +30,27 @@ def after_authentication(mode='JUST_USERNAME'):
 
 class MetricsApp():
     def get_app(self, parent_app):
+
+        engine = create_engine('sqlite:///' + path.join(parent_app['config'].data_folder, 'metrics.db'), echo=True)
+        conn = engine.connect()
+
+        metadata = MetaData()
+
+        trackpoints = Table('track_codes', metadata,
+                            Column('code', String, primary_key=True),
+                            Column('content', String),
+                            Column('redirect', String),
+                            Column('is_image', Boolean)
+                            )
+
+        visits = Table('visits', metadata,
+                       Column('track_id', None, ForeignKey('track_codes.code')),
+                       Column('timestamp', String),
+                       Column('user_agent', String),
+                       Column('IP', String),
+                       Column('metadata', String),
+                       )
+        metadata.create_all(engine)
 
         metrics = web.Application()
         metrics['use_main_app_error_pages'] = True

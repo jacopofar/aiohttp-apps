@@ -1,25 +1,27 @@
 from aiohttp import web
 import aiohttp
 import hashlib
-import os.path as path
+from os import path, makedirs
 from string import hexdigits
 
 
 class PastabinApp():
     def get_app(self, parent_app):
         pastabin = web.Application()
+        data_dir = path.join(parent_app['config'].data_folder, 'pastabin_data')
+        makedirs(data_dir, exist_ok=True)
         pastabin['use_main_app_error_pages'] = True
         pastabin.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
         # this is to manage an URL without the trailing /
         pastabin.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(pastabin.router['index'].url_for()) + 'index.html'))
         async def see_paste(request):
-            id = request.match_info['file_identifier']
-            if not all(c in hexdigits for c in id):
-                return aiohttp.web.Response(text=f'Error, paste {id} is unknown', status=404)
-            data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
-            file_path = path.join(data_dir, id)
+            paste_id = request.match_info['file_identifier']
+            if not all(c in hexdigits for c in paste_id):
+                return aiohttp.web.Response(text=f'Error, paste {paste_id} is unknown', status=404)
+
+            file_path = path.join(data_dir, paste_id)
             if not path.isfile(file_path):
-                return aiohttp.web.Response(text=f'Error, paste {id} is unknown', status=404)
+                return aiohttp.web.Response(text=f'Error, paste {paste_id} is unknown', status=404)
 
             with open(file_path, 'r') as fp:
                 return aiohttp.web.Response(text=fp.read())
@@ -34,8 +36,6 @@ class PastabinApp():
             m = hashlib.sha256()
             m.update(text.encode('utf8'))
             file_name = m.hexdigest()
-
-            data_dir = path.join(path.dirname(path.realpath(__file__)), 'data')
             file_path = path.join(data_dir, file_name)
             if not path.isfile(file_path):
                 with open(file_path, 'w') as fp:
