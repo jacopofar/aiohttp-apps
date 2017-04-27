@@ -101,11 +101,13 @@
         msg_line.appendChild(nick_part);
 
         const message_part = document.createElement("span");
-        message_part.innerText = msg.message;
+        message_part.innerHTML = msg.message;
         msg_line.appendChild(message_part);
 
-        document.getElementById('chat_messages').appendChild(msg_line);
+        const chatbox = document.getElementById('chat_messages');
+        chatbox.appendChild(msg_line);
         console.log('message', msg);
+        chatbox.scrollTop = chatbox.scrollHeight;
     });
     document.getElementById('input_message').onkeypress = function(event) {
       var key=event.keyCode || event.which;

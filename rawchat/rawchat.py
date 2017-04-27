@@ -2,6 +2,8 @@ from aiohttp import web
 import aiohttp
 from os import path, makedirs
 import socketio
+from html import escape
+import re
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 
@@ -17,6 +19,12 @@ class RawchatApp():
         rawchat.router.add_get('/', lambda r: aiohttp.web.HTTPFound('index.html'), name='index')
         # this is to manage an URL without the trailing /
         rawchat.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(rawchat.router['index'].url_for()) + 'index.html'))
+
+        def render_message(raw_input):
+            safe_text = escape(raw_input)
+            enriched_html = re.sub(r"((http://|https://)[^ ]+)", r'<a href="\1">\1</a>', safe_text)
+            return enriched_html
+
 
         @sio.on('join', namespace='/rawchat')
         async def join(sid, message):
@@ -52,6 +60,7 @@ class RawchatApp():
                          room=sid,
                          namespace='/rawchat')
                 return
+            message['message'] = render_message(message['message'])
             if len(message['message']) > 400:
                 message['message'] = message['message'][:400] + '...'
             print('message by ' + str(sid) + ':' + str(message))
