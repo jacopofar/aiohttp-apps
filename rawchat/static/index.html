@@ -48,7 +48,7 @@
     var my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
     while (my_nick.length >= 30 || my_nick.length < 1) my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
 
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/rawchat');
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/rawchat');
 
 
     socket.on('connect', function() {
