@@ -8,6 +8,7 @@ sio = socketio.AsyncServer(async_mode='aiohttp')
 
 class RawchatApp():
     def get_app(self, parent_app):
+        rooms = {}
         rawchat = web.Application()
         sio.attach(parent_app)
         data_dir = path.join(parent_app['config'].data_folder, 'rawchat_data')
@@ -26,6 +27,17 @@ class RawchatApp():
                          namespace='/rawchat')
                 return
             print('join by ' + str(sid) + ' to room ' + message['room'])
+
+            if message['room'] not in rooms:
+                rooms[message['room']] = {'users': [message['nick']]}
+            else:
+                for u in rooms[message['room']]['users']:
+                    await sio.emit('join',
+                                   {'nick': u},
+                                   room=sid,
+                                   namespace='/rawchat')
+                rooms[message['room']]['users'].append(message['nick'])
+
             sio.enter_room(sid, message['room'], namespace='/rawchat')
             await sio.emit('join',
                            {'nick':  message['nick']},

@@ -23,6 +23,9 @@
     <h1>Rawchat</h1>
     <div id="chat_messages">
     </div>
+    <div id="nicknames">
+        Users here:
+    </div>
     <input id="input_message" size=80 placeholder="Type here...">
 
 
@@ -31,9 +34,7 @@
 <script>
     var consonants = 'bcdfglmnprstvzx'.split('');
     var vowels = 'aeiou'.split('');
-    var my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
-    while (my_nick.length >= 30) my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
-    var room_query_parts = window.location.href.split('room=');
+       var room_query_parts = window.location.href.split('room=');
     var room_name=null;
     if (room_query_parts.length === 2){
         room_name=window.location.href.split('room=')[1].split('&')[0];
@@ -42,7 +43,11 @@
         var array = new Uint32Array(10);
         window.crypto.getRandomValues(array);
         location.href += '?room=' + array[0] + array[1];
+        throw new Error("room not specified, will be redirected to a random one");
     }
+    var my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
+    while (my_nick.length >= 30 || my_nick.length < 1) my_nick = prompt('insert your nick under 30 characters, no checks are performed!');
+
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/rawchat');
 
 
@@ -72,6 +77,12 @@
         join_line.appendChild(message_part);
 
         document.getElementById('chat_messages').appendChild(join_line);
+
+        const nick = document.createElement("p");
+        nick.innerText = msg.nick;
+        nick.style.fontWeight="bold";
+        document.getElementById('nicknames').appendChild(nick);
+
         console.log('join', msg);
     });
 

@@ -33,4 +33,23 @@ hr {
 #chat_messages{
     overflow-y: auto;
     height: 30em;
+    float: left;
+    width: 80%;
+}
+
+#nicknames{
+    overflow-y: auto;
+    height: 30em;
+    float: right;
+    width: 15%;
+    margin-bottom: 0px;
+}
+#nicknames p{
+    margin-bottom: 0px;
+}
+#nicknames p:nth-child(even) {
+    background-color: #E6FFFF;
+}
+#nicknames p:nth-child(odd) {
+    background-color: #FFE6FF;
 }

@@ -107,7 +107,7 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s'
 ch.setFormatter(formatter)
 mp = logging.getLogger('aiohttp.access')
 
-#logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
-#logging.getLogger('aiohttp.access').addHandler(ch)
+logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
+logging.getLogger('aiohttp.access').addHandler(ch)
 
 web.run_app(app, port=config.web_port)
