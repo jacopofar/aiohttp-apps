@@ -1,15 +1,16 @@
 from aiohttp import web
+
 from pastabin import pastabin
 from metrics import metrics
 from shinymd import shinymd
-from time import gmtime
+from rawchat import rawchat
 
+from time import gmtime
 import aiohttp
 import jwt
 import jinja2
 import aiohttp_jinja2
 import os.path as path
-
 import config
 import logging
 
@@ -26,6 +27,7 @@ aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(template_folder), app_k
 app.add_subapp('/pastabin', pastabin.PastabinApp().get_app(app))
 app.add_subapp('/metrics', metrics.MetricsApp().get_app(app))
 app.add_subapp('/shinymd', shinymd.ShinymdApp().get_app(app))
+app.add_subapp('/rawchat', rawchat.RawchatApp().get_app(app))
 
 
 async def error_middleware(this_app, handler):
@@ -105,7 +107,7 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s'
 ch.setFormatter(formatter)
 mp = logging.getLogger('aiohttp.access')
 
-logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
-logging.getLogger('aiohttp.access').addHandler(ch)
+#logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
+#logging.getLogger('aiohttp.access').addHandler(ch)
 
 web.run_app(app, port=config.web_port)
