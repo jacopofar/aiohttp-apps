@@ -110,4 +110,6 @@ mp = logging.getLogger('aiohttp.access')
 logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
 logging.getLogger('aiohttp.access').addHandler(ch)
 
+app.router.add_get('/', lambda r: aiohttp.web.HTTPFound('/static/index.html'))
+
 web.run_app(app, port=config.web_port)
