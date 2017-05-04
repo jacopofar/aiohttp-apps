@@ -1,6 +1,6 @@
 # Grammar for generic Italian statements, based on text from wikipedia
 # Un cirrostrato (in latino cirrostratus, abbreviazione Cs) è una nube della stessa natura dei cirri, ma formata da un velo continuo, traslucido, che copre totalmente o parzialmente il cielo.
-S -> AI[NUM=?n,GEN=?g] NN[NUM=?n,GEN=?g] OPT_DEFINITION COPULA_PRESENT[NUM=?n] AI[NUM=?n,GEN=?gx] NN[NUM=?n,GEN=?gx] OPT_COMPARAZIONE[NUM=?n,GEN=?g]
+S -> AI[NUM=?n,GEN=?g] '<a href="' LATIN_NAME '">' NN[NUM=?n,GEN=?g] '</a>' OPT_DEFINITION COPULA_PRESENT[NUM=?n] AI[NUM=?n,GEN=?gx] NN[NUM=?n,GEN=?gx] OPT_COMPARAZIONE[NUM=?n,GEN=?g]
 
 
 AI[NUM=s,GEN=m] -> 'un'

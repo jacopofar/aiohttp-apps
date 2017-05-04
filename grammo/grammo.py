@@ -82,4 +82,6 @@ class GrammoApp():
                 })
 
         grammo.router.add_get('/{seed}', get_production, name='get_production')
+        grammo.router.add_static('/static', 'grammo/static', show_index = True)
+
         return grammo
