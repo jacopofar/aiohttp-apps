@@ -113,5 +113,6 @@ logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
 logging.getLogger('aiohttp.access').addHandler(ch)
 
 app.router.add_get('/', lambda r: aiohttp.web.HTTPFound('/static/index.html'))
+app.router.add_get('/robots.txt', lambda r: aiohttp.web.HTTPFound('/static/robots.txt'))
 
 web.run_app(app, port=config.web_port)
