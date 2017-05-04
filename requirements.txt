@@ -9,6 +9,7 @@ markdown2==2.3.3
 MarkupSafe==1.0
 Mastodon.py==1.0.6
 multidict==2.1.4
+nltk==3.2.2
 py==1.4.33
 PyJWT==1.4.2
 pytest==3.0.7
@@ -20,4 +21,5 @@ pytz==2017.2
 requests==2.13.0
 six==1.10.0
 SQLAlchemy==1.1.9
+xxhash==1.0.1
 yarl==0.10.0

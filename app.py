@@ -4,6 +4,7 @@ from pastabin import pastabin
 from metrics import metrics
 from shinymd import shinymd
 from rawchat import rawchat
+from grammo import grammo
 
 from time import gmtime
 import aiohttp
@@ -28,6 +29,7 @@ app.add_subapp('/pastabin', pastabin.PastabinApp().get_app(app))
 app.add_subapp('/metrics', metrics.MetricsApp().get_app(app))
 app.add_subapp('/shinymd', shinymd.ShinymdApp().get_app(app))
 app.add_subapp('/rawchat', rawchat.RawchatApp().get_app(app))
+app.add_subapp('/grammo', grammo.GrammoApp().get_app(app))
 
 
 async def error_middleware(this_app, handler):

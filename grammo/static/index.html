@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Shinymd</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="grid.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Shinymd</h1>
+    <p class="lead">Publish a page. That's it.</p>
+
+    <p>Layout and CSS from Bootstrap, editor from <a href="https://simplemde.com/">SimpleMDE</a></p>
+    <form method="POST" action="publish_page">
+        <div class="form-group">
+            <label for="page_md">Write the Markdown here:</label><br/>
+            <textarea class="form-control" name="page_md" id="page_md" rows="30">
+Hello, this is a __markdown__ text. You can insert all the usual [markdown formatting](http://daringfireball.net/projects/markdown/)
+This will be published as a plain UTF-8 encoded HTML page, so emojis are supported 💾
+            </textarea>
+            <br/>
+            <label for="page_id">Page title:</label><br/>
+            <input type="input" name="page_id" id="page_id" />
+        </div>
+        <button type="submit" class="btn btn-primary">Publish</button>
+    </form>
+</div>
+<script>
+var simplemde = new SimpleMDE({ element: document.getElementById("page_md") });
+</script>
+</body>
+</html>
