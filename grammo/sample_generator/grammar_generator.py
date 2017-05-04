@@ -5,7 +5,7 @@ import xxhash
 __all__ = ['SampleGenerator']
 
 
-class SampleGenerator:
+class GrammarGenerator:
     def __init__(self, grammar):
         self.grammar = nltkgr.FeatureGrammar.fromstring(grammar)
         parser = FeatureEarleyChartParser(self.grammar)

@@ -1,2 +1,3 @@
-S -> '{{snippet:html_header.html}}' '{{grammar:generico_it_wikipedia}}' '{{snippet:html_footer.html}}'
-S -> '{{snippet:bootstrap_pre_title.html}}' '{{grammar:titles}}' '{{snippet:bootstrap_after_title_pre_slogan.html}}' '{{grammar:slogan}}' '{{snippet:bootstrap_after_slogan_pre_content.html}}' '{{grammar:generico_it_wikipedia}}' '{{snippet:bootstrap_after_content.html}}'
+S -> '{{template:bootstrap.html}}'
+#S -> '{{snippet:html_header.html}}' '{{grammar:generico_it_wikipedia}}' '{{snippet:html_footer.html}}'
+#S -> '{{snippet:bootstrap_pre_title.html}}' '{{grammar:titles}}' '{{snippet:bootstrap_after_title_pre_slogan.html}}' '{{grammar:slogan}}' '{{snippet:bootstrap_after_slogan_pre_content.html}}' '{{grammar:generico_it_wikipedia}}' '{{snippet:bootstrap_after_content.html}}'
