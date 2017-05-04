@@ -1,5 +1,5 @@
  S -> CLASSE_TECH 'soffrono del problema' PROBLEMA '. Noi intendiamo risolverlo sfruttando' TECH_ARTICOLO
 
- CLASSE_TECH -> 'i database relazionali' |'le interfacce REST' | 'i sistemi cognitivi'|'i motori a regole'|'le basi dati'|'le applicazioni mobile'|'le interfacce legacy'|'le stampanti 3D'
+ CLASSE_TECH -> 'I database relazionali' |'Le interfacce REST' | 'I sistemi cognitivi'|'I motori a regole'|'Le basi dati'|'Le applicazioni mobile'|'Le interfacce legacy'|'Le stampanti 3D'
  PROBLEMA -> 'dei database NoSQL' |'del lavoro di squadra' |'del coworking' |'del coaching'
  TECH_ARTICOLO -> 'l&quot;UML'|'i documenti di analisi'|'l&quot;architettura REST'|'le data warehouse'|'i social network'

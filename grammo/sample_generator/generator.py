@@ -85,8 +85,6 @@ class Generator():
         result = []
         for i, t in enumerate(tokens):
             result.extend(self.expand_token(t, seed + '_' + str(i)))
-
-        print(result)
         return result
 
     def generate(self, seed):
