@@ -2,6 +2,7 @@ from aiohttp import web
 import aiohttp
 from os import path, makedirs
 from grammo.sample_generator import sample_generator
+from functools import lru_cache
 import re
 digits_pattern = re.compile("^[0-9]+$")
 
@@ -54,6 +55,7 @@ class GrammoApp():
             with open(path.join(snippets_dir, name), 'r', encoding='utf8') as this_snippet:
                 return this_snippet.read()
 
+        @lru_cache(maxsize=200)
         def generate_production(grammar, seed):
             if grammar not in self.gens:
                 self.gens[grammar] = sample_generator.SampleGenerator(get_grammar(grammar))

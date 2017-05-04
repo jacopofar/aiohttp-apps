@@ -15,7 +15,6 @@ class ShinymdApp():
         # this is to manage an URL without the trailing /
         shinymd.router.add_get('', lambda r: aiohttp.web.HTTPFound(str(shinymd.router['index'].url_for()) + 'index.html'))
 
-
         async def see_article(request):
             page_id = request.match_info['file_identifier']
             file_path = path.realpath(path.join(data_dir, page_id))
