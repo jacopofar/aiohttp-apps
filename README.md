@@ -10,6 +10,6 @@ Those are:
 * mastodon OAuth2 checker 
 * metric collector (to collect metrics about page visits or QR codes usage) (✔✔✔ done)
 * a tool to track the content at a given URL at the current time (screenshot or page HTML)
-* generate pages based on the [NLTK-grammar sampler](https://github.com/jacopofar/django-nltk-generator)
+* generate pages based on the [NLTK-grammar sampler](https://github.com/jacopofar/django-nltk-generator) (✔✔✔︎ done)
 * an application to build an image ranking by extracting random pairs and letting users vote between them
 * an application to allow users to tag images and add description
