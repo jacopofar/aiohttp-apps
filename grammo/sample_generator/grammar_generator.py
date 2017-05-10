@@ -80,7 +80,7 @@ class GrammarGenerator:
         if counter > max_depth:
             # print(' --max recursion reached--')
             words.append(max_depth_token)
-            return True, words
+            return True, words, bound_features
         # print('picked expansion ' + str(production) + ' for ' + str(symbol) + ' at counter ' + str(counter))
         is_truncated = False
         # additionally, the lhs may have had variables, like NN[NUM=?x, GEN=?y] -> SOMETHING[NUM=?x] ...
