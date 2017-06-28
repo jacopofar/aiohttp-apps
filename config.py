@@ -1,9 +1,9 @@
 import uuid
 import configparser
 from os import path, makedirs
+from dynaconf import settings
 # all configuration goes in this module, or is loaded from here
-# TODO which library to implement 12-factor-style configuration? maybe https://github.com/rochacbruno/dynaconf
-web_port = 8080
+web_port = settings.get('PORT', 8080, cast='@int')
 
 secret_token = str(uuid.uuid4())
 print(f'\n\n+++ the secret token is {secret_token} +++\n\n')

@@ -4,6 +4,7 @@ aiohttp-jinja2==0.13.0
 async-timeout==1.2.0
 chardet==2.3.0
 dateutils==0.6.6
+dynaconf==0.4.5
 Jinja2==2.9.6
 markdown2==2.3.3
 MarkupSafe==1.0
