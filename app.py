@@ -1,4 +1,5 @@
 from aiohttp import web
+import asyncio
 
 from pastabin import pastabin
 from metrics import metrics
@@ -103,16 +104,22 @@ app.router.add_static('/static', 'assets/static')
 
 # set logging time to UTC
 logging.Formatter.converter = gmtime
+# see https://stackoverflow.com/questions/43500983/specify-log-request-format-in-aiohttp-2
+app_logger = logging.getLogger('aiohttp.access')
+app_logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-# TODO message is a raw aiohttp log message, redundant, how to change it? Docs are not very clear :(
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s', '%Y-%m-%dT%H:%M:%S')
-ch.setFormatter(formatter)
-mp = logging.getLogger('aiohttp.access')
+app_logger.addHandler(ch)
 
-logging.getLogger('aiohttp.access').setLevel(logging.DEBUG)
-logging.getLogger('aiohttp.access').addHandler(ch)
 
 app.router.add_get('/', lambda r: aiohttp.web.HTTPFound('/static/index.html'))
 app.router.add_get('/robots.txt', lambda r: aiohttp.web.HTTPFound('/static/robots.txt'))
 
-web.run_app(app, port=config.web_port)
+# explicitly retrieve and use the loop instead of just using web.run_app, to apply a custom logger
+loop = asyncio.get_event_loop()
+
+loop.run_until_complete(
+    loop.create_server(
+        app.make_handler(access_log=app_logger,
+                         access_log_format='%t %s %r %b'), '0.0.0.0', config.web_port))
+loop.run_forever()
+loop.close()
