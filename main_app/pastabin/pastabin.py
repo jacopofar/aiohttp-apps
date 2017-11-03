@@ -2,6 +2,7 @@ from aiohttp import web
 import aiohttp
 import hashlib
 from os import path, makedirs
+from pathlib import Path
 from string import hexdigits
 
 
@@ -44,7 +45,6 @@ class PastabinApp():
 
         pastabin.router.add_post('/send_paste', send_paste)
 
-
-        pastabin.router.add_static('/', 'pastabin/static')
+        pastabin.router.add_static('/', str(Path(__file__).parent / 'static'))
 
         return pastabin

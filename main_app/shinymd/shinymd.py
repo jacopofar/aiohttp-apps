@@ -3,7 +3,7 @@ import aiohttp
 import json
 from os import path, makedirs
 from markdown2 import Markdown
-
+from pathlib import Path
 
 class ShinymdApp():
     def get_app(self, parent_app):
@@ -53,6 +53,6 @@ class ShinymdApp():
 
         shinymd.router.add_post('/publish_page', publish_page)
 
-        shinymd.router.add_static('/', 'shinymd/static')
+        shinymd.router.add_static('/', str(Path(__file__).parent / 'static'))
 
         return shinymd

@@ -4,6 +4,7 @@ from os import path, makedirs
 import socketio
 from html import escape
 import re
+from pathlib import Path
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 
@@ -71,6 +72,6 @@ class RawchatApp():
                            namespace='/rawchat')
 
 
-        rawchat.router.add_static('/', 'rawchat/static')
+        rawchat.router.add_static('/', str(Path(__file__).parent / 'static'))
 
         return rawchat

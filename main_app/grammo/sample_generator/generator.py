@@ -7,7 +7,8 @@ import re
 
 digits_pattern = re.compile("^[0-9]+$")
 
-class Generator():
+
+class Generator:
 
     def __init__(self, grammar_dir, snippets_dir, templates_dir):
         self.grammar_dir = grammar_dir
@@ -62,7 +63,7 @@ class Generator():
         variables, template = self.get_template(template)
         to_replace = {}
         for i, gram in enumerate(variables):
-            to_replace[gram] = self.to_clean_text(self.generate_production(gram, seed + '_' + str(i) ))
+            to_replace[gram] = self.to_clean_text(self.generate_production(gram, seed + '_' + str(i)))
         return template.render(to_replace)
 
     def expand_token(self, t, seed):

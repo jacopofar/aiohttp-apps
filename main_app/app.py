@@ -16,12 +16,13 @@ import os.path as path
 import config
 import logging
 
+from pathlib import Path
 
 app = web.Application()
 app['config'] = config
 
 
-template_folder = path.join(path.abspath(path.dirname(__file__)), 'assets/jinja_templates')
+template_folder = str(Path(__file__).parent / 'assets' / 'jinja_templates')
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(template_folder), app_key='root_app_jinja2_environment')
 
 # load global configuration
@@ -100,7 +101,7 @@ async def jwt_middleware(this_app, handler):
 
 app.middlewares.append(jwt_middleware)
 
-app.router.add_static('/static', 'assets/static')
+app.router.add_static('/static', str(Path(__file__).parent / 'assets' / 'static'))
 
 # set logging time to UTC
 logging.Formatter.converter = gmtime
