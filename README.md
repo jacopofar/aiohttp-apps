@@ -22,6 +22,6 @@ Otherwise:
 * Create a virtualenv with `python3 -m venv .venv`
 * Activate it with `source .venv/bin/activate`
 * Install with `pip3 install -r requirements.txt`
-* Run with `DYNACONF_PORT=8090 python3 app.py` (omitting the port it uses 8080)
+* Run with `DYNACONF_PORT=8090 python3 main_app/app.py` (omitting the port it uses 8080)
 
 Tested on MacOS and a few Linux distros, if you have a Windows machine and are interested I'd like to have it work there as well 
