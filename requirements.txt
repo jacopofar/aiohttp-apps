@@ -1,5 +1,5 @@
 aioauth-client==0.16.0
-aiohttp==3.5.4
+aiohttp==3.7.4
 aiohttp-jinja2==1.1.0
 async-timeout==3.0.1
 certifi==2018.11.29
